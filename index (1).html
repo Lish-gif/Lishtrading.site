@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lishtrading.site</title>
+    <style>
+        /* Full-Screen Blue Background */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: blue; /* Blue background */
+            z-index: 1000; /* Ensure it's above everything */
+        }
+
+        /* Loading Spinner Styles */
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid rgba(255, 255, 255, 0.1); /* Light border */
+            border-top: 4px solid red; /* Red spinner color */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            z-index: 1000; /* Ensure it's above the blue background */
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Other CSS styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: #222;
+            transition: left 0.3s ease;
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        /* P&L Display Styles */
+        #pnl-display {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen (Blue Background) -->
+    <div id="loadingScreen" class="loading-screen">
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <button class="menu-button" onclick="toggleSidebar()">☰</button>
+        <div class="logo">Lishtrading.site</div>
+        <!-- Auth Buttons (Top-Right Corner) -->
+        <div class="auth-buttons">
+            <a href="https://oauth.deriv.com/oauth2/authorize?app_id=68001&scope=read,trade&redirect_uri=https://lish-gif.github.io/Lishtrading.site" class="login">Log In</a>
+            <a href="#" class="signup" onclick="openModal('signupModal')">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <span class="close-button" onclick="toggleSidebar()">✖</span>
+        <ul>
+            <li><a href="#traders-hub">🏠 Trader's Hub</a></li>
+            <li><a href="#" onclick="toggleDarkMode()">🌙 Dark Theme</a></li>
+            <li><a href="#help-center">❓ Help Center</a></li>
+            <li><a href="#responsible-trading">🛡 Responsible Trading</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Introduction Section -->
+        <div class="section">
+            <h2>Join over 2.5 million traders</h2>
+            <p>Get started with the most trusted trading platform.</p>
+            <button onclick="openModal('signupModal')">Get Started</button>
+        </div>
+
+        <!-- Trading Platforms Section -->
+        <div class="section">
+            <h2>Trader's Hub</h2>
+            <div class="Platform">
+                <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                    <div id="options-tab" class="tab" onclick="openTab('options-content')">
+                        <p>Options</p>
+                    </div>
+                    <div id="cfds-tab" class="tab" onclick="openTab('cfds-content')">
+                        <p>CFDs</p>
+                    </div>
+                </div>
+                <div class="platforms-grid">
+                    <div class="platform">
+                        <h3>Predict the market, profit if you're right, risk only what you put in</h3>
+                        <a href="#" class="learn-more-link">Learn More</a>
+                    </div>
+                </div>
+                <div class="platforms-grid">
+                    <div class="platform">
+                        <h3>Deriv Trader</h3>
+                        <p>The options and multipliers trading platform.</p>
+                        <button>Open</button>
+                    </div>
+                    <div class="platform">
+                        <h3>Deriv Bot</h3>
+                        <p>The ultimate bot trading platform.</p>
+                        <button>Open</button>
+                    </div>
+                    <div class="platform">
+                        <h3>Smart Trader</h3>
+                        <p>The legacy options trading platform.</p>
+                        <button>Open</button>
+                    </div>
+                    <div class="platform">
+                        <h3>Deriv GO</h3>
+                        <p>The mobile app for trading multipliers and accumulators.</p>
+                        <button>Open</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- P&L Display -->
+    <div id="pnl-display">Loading P&L...</div>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Sign Up</h2>
+            <input type="text" placeholder="Full Name" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('forgotPasswordModal')">&times;</span>
+            <h2>Forgot Password</h2>
+            <p>Enter your email to reset your password.</p>
+            <input type="email" placeholder="Email" required>
+            <button type="submit">Reset Password</button>
+        </div>
+    </div>
+<script>
+    // Deriv API token (Replace with your token)
+    const derivToken = "YOUR_API_TOKEN_HERE";
+    const derivAppID = "36001"; // Your App ID
+    const apiEndpoint = "https://api.deriv.com";
+    // Function to fetch account balance
+    const fetchBalance = async () => {
+        try {
+            const response = await fetch(`${apiEndpoint}/api/v1/account/balance`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${derivToken}` },
+            });
+            const data = await response.json();
+            if (data.balance) {
+                accountBalance = data.balance; // Use fetched balance
+                accountBalanceEl.textContent = `Balance: $${accountBalance.toFixed(2)}`;
+            }
+        } catch (error) {
+            console.error("Error fetching balance:", error);
+        }
+    };
+
+    // Function to update the displayed balance
+    const updateBalanceDisplay = () => {
+        accountBalanceEl.textContent = `Balance: $${accountBalance.toFixed(2)}`;
+    };
+
+    // Trade Logic
+    const startTrade = async (type, stake, ticks, prediction, martingaleMultiplier) => {
+        if (stake > accountBalance) {
+            alert("Insufficient balance!");
+            return;
+        }
+
+        // Deduct the stake
+        accountBalance -= stake;
+        updateBalanceDisplay();
+
+        // Placeholder for trade execution with Deriv API
+        const tradeResult = Math.random() < 0.5 ? "win" : "loss"; // Simulated result
+        if (tradeResult === "win") {
+            const profit = stake * 0.8; // 80% profit
+            accountBalance += stake + profit;
+            updateBalanceDisplay();
+        }
+                }));
+
+                // Hide loading screen after WebSocket connection is established
+                const loadingScreen = document.getElementById("loadingScreen");
+                const spinner = document.getElementById("loadingSpinner");
+                loadingScreen.style.display = "none";
+                spinner.style.display = "none";
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('Received data:', data);
+
+                // Handle price updates
+                if (data.tick) {
+                    console.log(`Price update: ${data.tick.symbol} - Bid: ${data.tick.bid}, Ask: ${data.tick.ask}`);
+                }
+
+                // Handle trade notifications
+                if (data.trade) {
+                    console.log(`Trade update: ${data.trade.status}`);
+                }
+
+                // Handle account updates
+                if (data.balance) {
+                    console.log(`Account balance: ${data.balance.balance}`);
+                }
+            };
+
+            socket.onclose = () => {
+                console.log('WebSocket connection closed');
+            };
+
+            socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        // Check for access token in URL hash
+        const accessToken = getAccessTokenFromURL();
+        if (accessToken) {
+            // Initialize WebSocket connection with access token
+            initializeWebSocket(accessToken);
+        } else {
+            // Redirect to Deriv OAuth login if no access token is found
+            window.location.href = "https://oauth.deriv.com/oauth2/authorize?app_id=68001&scope=read,trade&redirect_uri=https://lish-gif.github.io/Lishtrading.site";
+        }
+
+        // Function to toggle sidebar
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-theme");
+            document.querySelectorAll('.section, .platform').forEach(el => {
+                el.classList.toggle('dark-theme');
+            });
+        }
+
+        // Function to open modal
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+        }
+
+        // Function to close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Function to open tab
+        function openTab(tabId) {
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const selectedContent = document.getElementById(tabId);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+        }
+
+        // Function to fetch P&L data
+        async function fetchPnL() {
+            try {
+                const response = await fetch("http://your-java-server-ip:8080/pnl");
+                const data = await response.json();
+
+                // Update P&L display
+                document.getElementById("pnl-display").innerText = `Total P&L: $${data.totalPnl.toFixed(2)}`;
+            } catch (error) {
+                console.error("Error fetching P&L:", error);
+                document.getElementById("pnl-display").innerText = "Failed to load P&L";
+            }
+        }
+
+        // Fetch P&L every 5 seconds
+        setInterval(fetchPnL, 5000);
+
+        // Fetch immediately on page load
+        fetchPnL();
+    </script>
+</body>
+</html>
